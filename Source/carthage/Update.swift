@@ -8,9 +8,9 @@ import Curry
 /// Type that encapsulates the configuration and evaluation of the `update` subcommand.
 public struct UpdateCommand: CommandProtocol {
 	public struct Options: OptionsProtocol {
-		public let checkoutAfterUpdate: Bool
-		public let buildAfterUpdate: Bool
-		public let isVerbose: Bool
+		public let checkoutAfterUpdate: Bool = true
+		public let buildAfterUpdate: Bool = true
+		public let isVerbose: Bool = false
 		public let logPath: String?
 		public let useNewResolver: Bool
 		public let buildOptions: CarthageKit.BuildOptions
@@ -43,17 +43,11 @@ public struct UpdateCommand: CommandProtocol {
 			}
 		}
 
-		private init(checkoutAfterUpdate: Bool,
-		             buildAfterUpdate: Bool,
-		             isVerbose: Bool,
-		             logPath: String?,
+		private init(logPath: String?,
 		             useNewResolver: Bool,
 		             buildOptions: BuildOptions,
 		             checkoutOptions: CheckoutCommand.Options
 		) {
-			self.checkoutAfterUpdate = checkoutAfterUpdate
-			self.buildAfterUpdate = buildAfterUpdate
-			self.isVerbose = isVerbose
 			self.logPath = logPath
 			self.useNewResolver = useNewResolver
 			self.buildOptions = buildOptions
@@ -67,9 +61,6 @@ public struct UpdateCommand: CommandProtocol {
 			let dependenciesUsage = "the dependency names to update, checkout and build"
 
 			return curry(Options.init)
-				<*> mode <| Option(key: "checkout", defaultValue: true, usage: "skip the checking out of dependencies after updating")
-				<*> mode <| Option(key: "build", defaultValue: true, usage: buildDescription)
-				<*> mode <| Option(key: "verbose", defaultValue: false, usage: "print xcodebuild output inline (ignored if --no-build option is present)")
 				<*> mode <| Option(key: "log-path", defaultValue: nil, usage: "path to the xcode build output. A temporary file is used by default")
 				<*> mode <| Option(key: "new-resolver", defaultValue: false, usage: "use the new resolver codeline when calculating dependencies. Default is false")
 				<*> BuildOptions.evaluate(mode, addendum: "\n(ignored if --no-build option is present)")
