@@ -815,6 +815,12 @@ private func build(sdk: SDK, with buildArgs: BuildArguments, in workingDirectory
 								// Disable the "Strip Linked Product" build
 								// setting so we can later generate a dSYM
 								"STRIP_INSTALLED_PRODUCT=NO",
+
+                                // Xcode11-beta4 issue's workaround
+                                // Targets that contain Swift code with the Enable Bitcode build setting set to Yes fail to link correctly when built with the Archive action. (52804818)
+                                // Workaround: Add a custom build setting with the name LD_VERIFY_BITCODE, and set it to NO. Make a note to yourself to delete this custom build setting once this issue is resolved.
+                                // https://developer.apple.com/documentation/xcode_release_notes/xcode_11_beta_4_release_notes
+                                "LD_VERIFY_BITCODE=NO",
 							]
 						}
 
